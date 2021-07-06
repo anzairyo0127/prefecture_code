@@ -10,6 +10,9 @@ export interface S3event {
 };
 
 const createResponse = (statusCode:number, body?:any) => {
+  if (typeof body !== "string") {
+    body = JSON.stringify(body);
+  }
   return {
     statusCode,
     body,
@@ -46,8 +49,9 @@ exports.getLocalGovernment = async (event: APIGatewayProxyEvent, context: Contex
   const result = await getBucketFromSQL(`SELECT * FROM s3object s WHERE s.local_government_code = '${localGovernmentCode}'`);
   if (result.$response.error) return createResponse(400, result.$response.error);
   const output = await surgeryS3Result(result.Payload as sdk.S3.SelectObjectContentEventStream);
-  if (output.length < 3) return createResponse(404, output);
-  return createResponse(200, output);
+  const json = JSON.parse(output);
+  if (json.length < 1) return createResponse(404, output);
+  return createResponse(200, JSON.stringify(json[0]));
 };
 
 exports.getPrefecture = async (event: APIGatewayProxyEvent, context: Context, callback: Callback) => {
@@ -55,6 +59,7 @@ exports.getPrefecture = async (event: APIGatewayProxyEvent, context: Context, ca
   const result = await getBucketFromSQL(`SELECT * FROM s3object s WHERE s.prefecture_code = '${prefectureCode}'`);
   if (result.$response.error) return createResponse(400, result.$response.error);
   const output = await surgeryS3Result(result.Payload as sdk.S3.SelectObjectContentEventStream);
-  if (output.length < 3) return createResponse(404, output);
-  return createResponse(200, output);
+  const json = JSON.parse(output);
+  if (json.length < 1) return createResponse(404, output);
+  return createResponse(200, json);
 };
