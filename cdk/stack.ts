@@ -61,7 +61,7 @@ export class PrefectureCodeProjectStack extends cdk.Stack {
       destinationBucket: prefecureCodeBucket,
     });
     // readme https://docs.aws.amazon.com/cdk/api/latest/docs/aws-s3-deployment-readme.html
-    const prefecureCodeApi = new apig.RestApi(this, "MinecraftRestLikeAPI", {
+    const prefecureCodeApi = new apig.RestApi(this, "PrefecureCodeApi", {
       restApiName: "PrefecureCodeApi",
       deployOptions: {
         stageName: "v1",
@@ -74,7 +74,7 @@ export class PrefectureCodeProjectStack extends cdk.Stack {
     });
     const getLocalGovermentProps: lambdas.GetFunctionProps = {
       stack: this,
-      entry: "src/handlers.ts",
+      entry: "./src/handlers.ts",
       handler: "getLocalGovernment",
       functionName: "getLocalGoverment",
       bucketProps: {
@@ -92,7 +92,7 @@ export class PrefectureCodeProjectStack extends cdk.Stack {
 
     const getPrefectureProps: lambdas.GetFunctionProps = {
       stack: this,
-      entry: "src/handlers.ts",
+      entry: "./src/handlers.ts",
       handler: "getPrefecture",
       functionName: "getPrefecture",
       bucketProps: {

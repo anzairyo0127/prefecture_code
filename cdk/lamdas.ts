@@ -22,12 +22,13 @@ export const createGetFunction = (props: GetFunctionProps) => {
     entry: props.entry,
     handler: props.handler,
     memorySize: 256,
-    runtime: Runtime.NODEJS_12_X,
+    runtime: Runtime.NODEJS_14_X,
     environment: {
       TZ: "Asia/Tokyo",
       BUCKET_NAME: props.bucketProps.bucketName,
       BUCKET_TARGET_NAME: "000730858.gzip",
     },
+    bundling: { minify: true }
   });
   lambda.role?.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonS3ReadOnlyAccess"));
   return lambda;
